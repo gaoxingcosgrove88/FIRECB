@@ -1,0 +1,27 @@
+metadata_version: 1
+name: 'PGxCWL: Creating reproducible pharmacogenomic analysis pipelines'
+description: The field of Pharmacogenomics presents great challenges for researchers
+  that are willing to make their studies reproducible and shareable. This is attributed
+  to the generation of large volumes of high-throughput multimodal data, and the lack
+  of standardized workflows that are robust, scalable, and flexible to perform large-scale
+  analyses. To address this issue, we developed pharmacogenomic workflows in the Common
+  Workflow Language to process two breast cancer datasets in a reproducible and transparent
+  manner. Our pipelines combine both pharmacological and molecular profiles into a
+  portable data object that can be used for future analyses in cancer research. Our
+  data objects and workflows are shared on Harvard Dataverse and Code Ocean where
+  they have been assigned a unique Digital Object Identifier, providing a level of
+  data provenance and a persistent location to access and share our data with the
+  community.
+tags:
+- pharmacogenomics
+- cancer
+authors:
+- name: Anthony Mammoliti
+  affiliations:
+  - name: University Health Network
+- name: Benjamin Haibe-Kains
+  affiliations:
+  - name: University Health Network
+corresponding_contributor:
+  name: Benjamin Haibe-Kains
+  email: bhaibeka@uhnresearch.ca
