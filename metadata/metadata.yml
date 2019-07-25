@@ -1,6 +1,6 @@
 metadata_version: 1
 name: 'PGxCWL: Creating reproducible pharmacogenomic analysis pipelines'
-description: The field of Pharmacogenomics presents great challenges for researchers
+description: The field of pharmacogenomics presents great challenges for researchers
   that are willing to make their studies reproducible and shareable. This is attributed
   to the generation of large volumes of high-throughput multimodal data, and the lack
   of standardized workflows that are robust, scalable, and flexible to perform large-scale

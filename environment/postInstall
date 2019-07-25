@@ -1,0 +1,5 @@
+Rscript -e "install.packages('BiocManager'); \
+
+    BiocManager::install('PharmacoGx'); \
+    BiocManager::install('Biobase'); \
+    BiocManager::install('survcomp')"
