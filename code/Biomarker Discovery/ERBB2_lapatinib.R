@@ -1,7 +1,6 @@
 library(PharmacoGx)
 library(Biobase)
 library(calibrate)
-library(wCI)
 library(forestplot)
 library(survcomp)
 
@@ -9,6 +8,7 @@ library(survcomp)
 
 load("/data/PSets/GRAY_2017.RData")
 load("/data/PSets/UHN_2019.RData")
+
 
 
 #### UHNBreast 2019 ####
@@ -28,14 +28,18 @@ UHNdf <- data.frame(name = commonSamples,
                     LAP = sensitivity_drug[commonSamples] ,
                     ERBB2 = rnaSeq_UHN[commonSamples,"ENSG00000141736"])
 
-ci <- paired.concordance.index(sensitivity_drug[commonSamples], rnaSeq_UHN[commonSamples,"ENSG00000141736"], delta.pred=0, delta.obs=0)
+ci <- survcomp::concordance.index(sensitivity_drug[commonSamples], surv.time = -rnaSeq_UHN[commonSamples,"ENSG00000141736"], surv.event = rep(1,length(sensitivity_drug[commonSamples])),outx = F, method="noether")
 
-UHNci <- ci$cindex
+
+
+UHNci <- ci$c.index
 UHNpvalue <- ci$p.value
-UHNserr <- ci$sterr
+UHNserr <- ci$se
 UHNupper <- ci$upper
 UHNlower <- ci$lower
-UHNconpair <- ci$concordant.pairs
+#UHNconpair <- ci$concordant.pairs
+
+gene= "ERBB2"
 
 
 #### GRAY 2017 ####
@@ -55,14 +59,15 @@ GRAYdf <- data.frame(name = commonSamples,
                      LAP = sensitivity_drug[commonSamples] ,
                      ERBB2 = rnaSeq_GRAY[commonSamples,"ENSG00000141736"])
 
-ci <- paired.concordance.index(sensitivity_drug[commonSamples], rnaSeq_GRAY[commonSamples,"ENSG00000141736"], delta.pred=0, delta.obs=0)
+ci <- survcomp::concordance.index(sensitivity_drug[commonSamples], surv.time = -rnaSeq_GRAY[commonSamples,"ENSG00000141736"], surv.event = rep(1,length(sensitivity_drug[commonSamples])),outx = F, method="noether")
 
-GRAYci <- ci$cindex
+
+GRAYci <- ci$c.index
 GRAYpvalue <- ci$p.value
-GRAYserr <- ci$sterr
+GRAYserr <- ci$se
 GRAYupper <- ci$upper
 GRAYlower <- ci$lower
-GRAYconpair <- ci$concordant.pairs
+#GRAYconpair <- ci$concordant.pairs
 
 
 combined_ci <- combine.est(
@@ -102,47 +107,6 @@ c_tabletext <- cbind(
 
 
 
-
-#Create Forest Plot
-
-c_indices <- structure(
-  list(
-    mean  = c(NA, GRAYci, UHNci, combined_ci$estimate),
-    lower = c(NA, GRAYlower, UHNlower, combined_ci_lower),
-    upper = c(NA, GRAYupper, UHNupper, combined_ci_upper)
-  ),
-  .Names = c("C-index    ", "lower", "upper"),
-  row.names = c(NA, -2L), 
-  class = "data.frame"
-)
-
-c_tabletext <- cbind(
-  c("PSet", "GRAY", "UHNBreast", "Meta analysis"),
-  c("N", 39, 50, 89), #common samples for each dataset
-  c("C-index", formatC(GRAYci, format = "e", digits = 2), formatC(UHNci, format = "e", digits = 2), formatC(combined_ci$estimate, format = "e", digits = 2)),
-  c("P-value", formatC(GRAYpvalue, format = "e", digits = 2), formatC(UHNpvalue, format = "e", digits = 2), formatC(combined_ci_p, format = "e", digits = 2))
-)
-
-
-c_fn <- local({
-  i = 0
-  b_clrs =  c("red","red")
-  l_clrs =  c("red","red")
-  function(..., clr.line, clr.marker){
-    i <<- i + 1
-    fpDrawNormalCI(..., clr.line = l_clrs[i], clr.marker = b_clrs[i])
-  }
-})
-
-c_fn1 <- local({
-  i = 0
-  s_clrs =c()
-  function(..., col){
-    i <<- i + 1
-    fpDrawSummaryCI(...,col=s_clrs[i])
-  }
-})
-
 fileName = "../results/Figure_3.pdf"
 pdf(fileName, width=7, height=3, onefile=FALSE)
 
@@ -157,6 +121,5 @@ forestplot(c_tabletext, c_indices, new_page = TRUE, boxsize = 0.3, is.summary=c(
                         summary="blue"),
            xticks= c(.4, .5, .6, .7, .8)
 )
-         
-           
+
 dev.off()

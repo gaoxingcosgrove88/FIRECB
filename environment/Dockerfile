@@ -17,9 +17,5 @@ RUN apt-get update \
 RUN Rscript -e 'options(warn=2); devtools::install_version("calibrate", version = "1.7.2")'
 RUN Rscript -e 'options(warn=2); devtools::install_version("forestplot", version = "1.7.2")'
 
-RUN Rscript -e 'devtools::install_github("bhklab/wCI", \
-      upgrade_dependencies = FALSE, \
-      ref = "v0.1.0")'
-
 COPY postInstall /
 RUN /postInstall
